@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <title>Chat with Node.js and Socket.io</title>
+</head>
+
+<body>
+    <h1>Chat</h1>
+    <div id="chat"></div>
+    <input type="text" name="msg" id="msg" placeholder="Message" class="form-control">
+    <input type="text" name="username" id="username" placeholder="Username" class="form-control">
+    <button onclick="send()" class="btn btn-primary btn-block">Send</button>
+</body>
+<script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
+<script>
+    const socket = io("http://localhost:3000")
+
+    socket.on("disconnect", () => {
+        console.log("disconnected")
+    })
+
+    socket.on("showmsg", data => {
+        const chat = document.getElementById('chat')
+        const p = document.createElement('p')
+        p.innerHTML = data.username + ":  " + data.msg
+        chat.append(p)
+    })
+
+    function send() {
+        const msgField = document.getElementById('msg')
+        const usernameField = document.getElementById('username')
+
+        socket.emit("msg", { msg: msgField.value, username: usernameField.value })
+    }
+</script>
+<style>
+    body{
+        padding: 10px;
+    }
+    #chat{
+        max-height: 400px;
+        min-height: 400px;
+        overflow-y: scroll;
+        background-color: aliceblue;
+    }
+</style>
+</html>
